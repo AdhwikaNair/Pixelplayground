@@ -533,8 +533,8 @@ const ChaosMode = ({ onBack }: { onBack: () => void }) => {
       const engine = Engine.create();
       const render = Render.create({ element: sceneRef.current, engine: engine, options: { width: window.innerWidth, height: window.innerHeight, pixelRatio: window.devicePixelRatio, wireframes: false, background: 'transparent' } });
       const ground = Bodies.rectangle(window.innerWidth / 2, window.innerHeight + 60, window.innerWidth * 2, 120, { isStatic: true, render: { fillStyle: 'white' } });
-      const ball = Bodies.circle(200, 300, 75, { density: 0.12, frictionAir: 0.002, render: { fillStyle: '#000', strokeStyle: '#fff', lineWidth: 10 } });
-      const chain = Constraint.create({ pointA: { x: 200, y: 50 }, bodyB: ball, stiffness: 0.9, length: 280, render: { visible: true, lineWidth: 8, strokeStyle: '#000' } });
+      const ball = Bodies.circle(200, 300, 75, { density: 0.12, frictionAir: 0.002, render: { fillStyle: '#ff0099', strokeStyle: '#00ffff', lineWidth: 12 } });
+      const chain = Constraint.create({ pointA: { x: 200, y: 50 }, bodyB: ball, stiffness: 0.9, length: 280, render: { visible: true, lineWidth: 10, strokeStyle: '#ffff00' } });
       const colors = ['#ff0099', '#00ffff', '#ccff00', '#ff6600'];
       const boxes = Array.from({length: 15}).map(() => Bodies.rectangle(Math.random()*window.innerWidth, 100, 80, 80, { render: { fillStyle: colors[Math.floor(Math.random()*4)], strokeStyle: 'black', lineWidth: 5 } }));
       Composite.add(engine.world, [ground, ball, chain, ...boxes]);
