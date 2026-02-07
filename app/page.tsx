@@ -499,7 +499,13 @@ const WigglyMode = ({ onBack, markerSize, setMarkerSize }: { onBack: () => void,
                 </div>
               </>
             ) : (
-              <div className="w-32 h-32 flex items-center justify-center bg-slate-100 text-slate-400 text-xs font-bold text-center p-2">No creations yet. Press DOOMSDAY to save.</div>
+              <div className="w-32 h-32 flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
+                <div className="flex gap-1 mb-2">
+                  <img src="/creative-brush.jpg" alt="Brush" className="w-12 h-12 object-cover border border-black" />
+                  <img src="/creative-colors.jpg" alt="Palette" className="w-12 h-12 object-cover border border-black" />
+                </div>
+                <p className="text-[9px] font-bold text-center text-slate-500 uppercase px-1">Press DOOMSDAY to save</p>
+              </div>
             )}
           </div>
           <button onClick={obliterate} className="bg-[#ff0055] text-white border-4 border-black p-4 font-black text-xl uppercase tracking-tighter shadow-[8px_8px_0_#000] active:translate-x-1 active:translate-y-1 transition-all flex flex-col items-center gap-1 group"><Bomb size={32} />DOOMSDAY</button>
