@@ -4,13 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Matter from "matter-js";
 import confetti from "canvas-confetti";
-import { 
-  Send, Zap, Monitor, Coffee as CoffeeIcon, AlertTriangle, 
-  Gamepad2, Heart, PenTool, Eraser, Sparkles,
-  Bomb, Highlighter, Pencil, X, Save, FilePlus, HelpCircle, 
-  RefreshCcw, LogOut, Droplet, Star, Play, SkipForward, Layers,
-  PencilLine, Volume2
-} from "lucide-react";
+import { Send, Zap, Monitor, CoffeeIcon, AlertTriangle, Gamepad2, Heart, PenTool, Eraser, Sparkles, Bomb, Highlighter, Pencil, X, Save, FilePlus, HelpCircle, RefreshCcw, LogOut, Droplet, Star, Play, SkipForward, Layers, PencilLine, Volume2, Beaker as Marker } from "lucide-react";
+import { Beaker } from "lucide-react"; // Import Beaker here
 
 // --- TYPES ---
 type Vibe = "neutral" | "chaos" | "retro" | "wiggly" | "coffee_mode";
@@ -306,7 +301,7 @@ const CoffeeMode = ({ onBack }: { onBack: () => void }) => {
                 </svg>
              </motion.div>
              <div className="w-full bg-slate-100 border-2 border-black h-6 relative overflow-hidden">
-                <motion.div animate={{ width: `${Math.min((distraction/THRESHOLD)*100, 100)}%` }} className={`h-full ${distraction > THRESHOLD*0.85 ? 'bg-red-500' : 'bg-[#795548]'} transition-colors`} />
+                <motion.div animate={{ width: `${Math.min((distraction/THRESHOLD)*100, 100)}%` }} className={`h-full ${distraction > THRESHOLD*0.85 ? 'bg-red-500' : 'bg-[#795548]'}`} />
                 <span className="absolute inset-0 flex items-center justify-center text-[9px] font-black uppercase text-black mix-blend-difference">Instability</span>
              </div>
           </div>
@@ -329,7 +324,7 @@ const ToolBtn_Fixed = ({ icon, color, active, onClick }: { icon: React.ReactNode
 const WigglyMode = ({ onBack }: { onBack: () => void }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [tool, setTool] = useState<'pen' | 'marker' | 'eraser' | 'pattern'>('pen');
+  const [tool, setTool] = useState<'pen' | 'marker' | 'highlighter' | 'eraser' | 'pattern'>('pen');
   const [pattern, setPattern] = useState<'kitty' | 'star' | 'heart'>('kitty');
   const [color, setColor] = useState('#1a2b3c');
   const [lineWidth, setLineWidth] = useState(3);
@@ -367,7 +362,8 @@ const WigglyMode = ({ onBack }: { onBack: () => void }) => {
     else {
       ctx.beginPath(); ctx.moveTo(x, y); ctx.lineCap = 'round';
       ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : color;
-      ctx.lineWidth = tool === 'marker' ? lineWidth * 6 : tool === 'eraser' ? 35 : lineWidth;
+      ctx.lineWidth = tool === 'marker' ? lineWidth * 6 : tool === 'highlighter' ? lineWidth * 8 : tool === 'eraser' ? 35 : lineWidth;
+      if (tool === 'highlighter') ctx.globalAlpha = 0.4;
     }
     setIsDrawing(true);
   };
@@ -384,7 +380,12 @@ const WigglyMode = ({ onBack }: { onBack: () => void }) => {
     } else { ctx.lineTo(x, y); ctx.stroke(); }
   };
 
-  const stopDrawing = () => { setIsDrawing(false); lastStampPos.current = null; };
+  const stopDrawing = () => { 
+    const ctx = canvasRef.current?.getContext('2d');
+    if (ctx) ctx.globalAlpha = 1;
+    setIsDrawing(false); 
+    lastStampPos.current = null; 
+  };
 
   const obliterate = () => {
     playRetroExplosion();
@@ -406,7 +407,7 @@ const WigglyMode = ({ onBack }: { onBack: () => void }) => {
             <button onClick={() => setActiveMenu(activeMenu === 'start' ? null : 'start')} className={`px-2 py-1 ${activeMenu === 'start' ? 'bg-black text-white shadow-none' : 'hover:bg-slate-200 border-2 border-black'}`}>Start</button>
             {activeMenu === 'start' && (
               <div className="absolute top-full left-0 mt-1 w-64 bg-white border-4 border-black shadow-[4px_4px_0_#000] z-50">
-                <div className="p-3 border-b-2 border-black bg-[#1a2b3c] text-white font-bold text-xs">WigglyOS v1.02</div>
+                <div className="p-3 border-b-2 border-black bg-[#1a2b3c] text-white font-bold text-xs">Canvas Studio v1.02</div>
                 <div className="p-4 bg-[#e0f0e0]">
                   <button onClick={onBack} className="w-full bg-red-500 text-white p-2 border-2 border-black hover:bg-red-600 flex items-center justify-center gap-2 text-xs font-bold uppercase shadow-[2px_2px_0_#000]"><LogOut size={14}/> LOG OFF</button>
                 </div>
@@ -414,13 +415,15 @@ const WigglyMode = ({ onBack }: { onBack: () => void }) => {
             )}
           </div>
           <button className="px-2 py-1 hover:bg-slate-200 font-bold uppercase" onClick={() => { if(confirm("New Canvas?")) { const ctx = canvasRef.current?.getContext('2d'); if(ctx) { ctx.fillStyle="#fff"; ctx.fillRect(0,0,2000,2000); } } }}>File</button>
-          <button className="px-2 py-1 hover:bg-slate-200 font-bold uppercase" onClick={() => alert("Help Menu: Just wiggle it.")}>Help</button>
+          <button className="px-2 py-1 hover:bg-slate-200 font-bold uppercase" onClick={() => alert("Help Menu: Use different tools to create your artwork - Pen, Marker, Highlighter, Patterns, or Eraser!")}>Help</button>
         </div>
         <button onClick={onBack} className="border-2 border-black px-2 font-bold hover:bg-red-500 transition-colors bg-white shadow-[2px_2px_0_#000]">X</button>
       </div>
       <div className="flex h-[calc(100vh-45px)] p-6 gap-6 relative z-10">
         <div className="w-24 bg-white border-4 border-black shadow-[6px_6px_0_#000] flex flex-col p-2 gap-3 z-20">
           <ToolBtn_Wiggly icon={<Pencil size={20}/>} active={tool==='pen'} onClick={() => setTool('pen')} />
+          <ToolBtn_Wiggly icon={<Beaker size={20}/>} active={tool==='marker'} onClick={() => setTool('marker')} />
+          <ToolBtn_Wiggly icon={<Highlighter size={20}/>} active={tool==='highlighter'} onClick={() => setTool('highlighter')} />
           <ToolBtn_Wiggly icon={<Sparkles size={20}/>} active={tool==='pattern'} onClick={() => setTool('pattern')} />
           <ToolBtn_Wiggly icon={<Eraser size={20}/>} active={tool==='eraser'} onClick={() => setTool('eraser')} />
           <div className="border-t-2 border-black pt-2 mt-2">
@@ -509,7 +512,7 @@ const RetroMode = ({ onBack }: { onBack: () => void }) => (
   <div className="w-full h-screen bg-[#2d2d2d] font-mono text-[#76c7c0] flex flex-col items-center justify-center p-8 border-[20px] border-[#4a4a4a] relative">
       <div className="max-w-3xl w-full space-y-8 text-center z-20">
           <Gamepad2 size={64} className="mx-auto mb-4 text-[#e06c75] animate-bounce" />
-          <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-widest text-[#e06c75] drop-shadow-[4px_4px_0_#000]">Adhwika World</h1>
+          <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-widest text-[#e06c75] drop-shadow-[4px_4px_0_#fff]">Adhwika World</h1>
           <button onClick={onBack} className="mt-8 px-8 py-4 bg-[#e06c75] text-black font-black border-4 border-black shadow-[5px_5px_0_#fff] hover:translate-y-1 hover:shadow-none uppercase">EXIT TO DESKTOP</button>
       </div>
   </div>
