@@ -359,6 +359,8 @@ const WigglyMode = ({ onBack, markerSize, setMarkerSize }: { onBack: () => void,
   const [color, setColor] = useState('#1a2b3c');
   const [shake, setShake] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [pastCreations, setPastCreations] = useState<string[]>([]);
+  const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
   const lastStampPos = useRef<{x: number, y: number} | null>(null);
 
   useEffect(() => {
@@ -417,6 +419,12 @@ const WigglyMode = ({ onBack, markerSize, setMarkerSize }: { onBack: () => void,
   };
 
   const obliterate = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const imageData = canvas.toDataURL();
+      setPastCreations(prev => [...prev, imageData]);
+      setCurrentGalleryIndex(prev => prev + 1);
+    }
     playRetroExplosion();
     setShake(true);
     confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
@@ -480,8 +488,19 @@ const WigglyMode = ({ onBack, markerSize, setMarkerSize }: { onBack: () => void,
             <input type="range" min="5" max="50" value={markerSize} onChange={(e) => setMarkerSize(Number(e.target.value))} className="w-full" />
             <div className="text-xs text-black mt-2 font-mono text-center">{markerSize}px</div>
           </div>
-          <div className="bg-white border-4 border-black shadow-[6px_6px_0_#1a2b3c] overflow-hidden">
-            <img src="/pixel-art-illustration.jpg" alt="Creative Artist Illustration" className="w-32 h-32 object-cover" />
+          <div className="bg-white border-4 border-black shadow-[6px_6px_0_#1a2b3c] overflow-hidden flex flex-col">
+            {pastCreations.length > 0 ? (
+              <>
+                <img src={pastCreations[currentGalleryIndex % pastCreations.length] || "/placeholder.svg"} alt="Past Creation" className="w-32 h-32 object-cover" />
+                <div className="flex gap-2 p-2 bg-slate-100 text-xs font-bold uppercase justify-center">
+                  <button onClick={() => setCurrentGalleryIndex(prev => prev === 0 ? pastCreations.length - 1 : prev - 1)} className="px-2 py-1 bg-black text-white border border-black hover:bg-slate-700">←</button>
+                  <span className="flex-1 text-center">{currentGalleryIndex % pastCreations.length + 1}/{pastCreations.length}</span>
+                  <button onClick={() => setCurrentGalleryIndex(prev => (prev + 1) % pastCreations.length)} className="px-2 py-1 bg-black text-white border border-black hover:bg-slate-700">→</button>
+                </div>
+              </>
+            ) : (
+              <div className="w-32 h-32 flex items-center justify-center bg-slate-100 text-slate-400 text-xs font-bold text-center p-2">No creations yet. Press DOOMSDAY to save.</div>
+            )}
           </div>
           <button onClick={obliterate} className="bg-[#ff0055] text-white border-4 border-black p-4 font-black text-xl uppercase tracking-tighter shadow-[8px_8px_0_#000] active:translate-x-1 active:translate-y-1 transition-all flex flex-col items-center gap-1 group"><Bomb size={32} />DOOMSDAY</button>
         </div>
