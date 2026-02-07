@@ -69,7 +69,8 @@ export default function App() {
           <motion.div key="neutral" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full h-full flex items-center justify-center relative">
             <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
             <div className="text-center space-y-8 z-10 max-w-md w-full px-6">
-              <motion.h1 initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="text-7xl font-black tracking-tighter drop-shadow-sm">Adhwika.</motion.h1>
+              <motion.h1 initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="text-7xl font-black tracking-tighter drop-shadow-sm">Pixel Playground.</motion.h1>
+              <p className="text-slate-600 font-mono text-sm tracking-wider">Where imagination meets interaction. Create, explore, and play.</p>
               <form onSubmit={handleInput} className="relative group">
                 <input 
                   autoFocus 
@@ -148,6 +149,34 @@ const playRetroExplosion = () => {
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
         osc.connect(gain); gain.connect(audioCtx.destination);
         osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+    } catch (e) {}
+};
+
+const playChaosSound = () => {
+    try {
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        const audioCtx = new AudioContext();
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        const gain2 = audioCtx.createGain();
+        
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+        osc1.frequency.setValueAtTime(440, audioCtx.currentTime);
+        osc1.frequency.exponentialRampToValueAtTime(220, audioCtx.currentTime + 0.3);
+        osc2.frequency.setValueAtTime(330, audioCtx.currentTime);
+        osc2.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.3);
+        
+        gain1.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        gain2.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        
+        osc1.connect(gain1); gain1.connect(audioCtx.destination);
+        osc2.connect(gain2); gain2.connect(audioCtx.destination);
+        osc1.start(); osc2.start();
+        osc1.stop(audioCtx.currentTime + 0.3); osc2.stop(audioCtx.currentTime + 0.3);
     } catch (e) {}
 };
 
@@ -461,6 +490,7 @@ const ToolBtn_Wiggly = ({ icon, active, onClick }: { icon: React.ReactNode, acti
 const ChaosMode = ({ onBack }: { onBack: () => void }) => {
     const sceneRef = useRef<HTMLDivElement>(null);
     const engineRef = useRef<Matter.Engine | null>(null);
+    const [markerSize, setMarkerSize] = useState(20);
     useEffect(() => {
       if (!sceneRef.current) return;
       const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint, Constraint } = Matter;
@@ -480,7 +510,12 @@ const ChaosMode = ({ onBack }: { onBack: () => void }) => {
       <div className="relative w-full h-screen overflow-hidden cursor-crosshair font-black" style={{ backgroundColor: '#8b5cf6', backgroundImage: 'radial-gradient(#c4b5fd 20%, transparent 20%), radial-gradient(#c4b5fd 20%, transparent 20%)', backgroundPosition: '0 0, 25px 25px', backgroundSize: '50px 50px' }}>
         <div ref={sceneRef} className="absolute inset-0" />
         <div className="absolute top-12 left-12 z-10 pointer-events-none select-none text-white drop-shadow-[8px_8px_0_#000]"><h1 className="text-7xl md:text-9xl uppercase tracking-tighter leading-[0.75] stroke-black" style={{ WebkitTextStroke: "3px black" }}>CHAOS<br/>MODE</h1></div>
-        <div className="absolute bottom-12 right-12 z-10 flex gap-6"><button onClick={() => engineRef.current && (engineRef.current.world.gravity.y *= -1)} className="bg-black text-white px-10 py-5 text-2xl border-4 border-white shadow-[10px_10px_0px_#ccff00] active:translate-y-2 active:shadow-none">FLIP GRAVITY</button><button onClick={onBack} className="bg-[#ff0099] text-white px-10 py-5 text-2xl border-4 border-black hover:bg-black active:translate-y-2 active:shadow-none">EXIT</button></div>
+        <div className="absolute top-12 right-12 z-10 bg-white bg-opacity-90 border-4 border-black rounded-lg p-4 shadow-[8px_8px_0_#000]">
+          <label className="block text-sm font-bold uppercase mb-2 text-black">Marker Size</label>
+          <input type="range" min="5" max="50" value={markerSize} onChange={(e) => setMarkerSize(Number(e.target.value))} className="w-40" />
+          <div className="text-xs text-black mt-1 font-mono">Size: {markerSize}px</div>
+        </div>
+        <div className="absolute bottom-12 right-12 z-10 flex gap-6"><button onClick={() => { engineRef.current && (engineRef.current.world.gravity.y *= -1); playChaosSound(); }} className="bg-black text-white px-10 py-5 text-2xl border-4 border-white shadow-[10px_10px_0px_#ccff00] active:translate-y-2 active:shadow-none">FLIP GRAVITY</button><button onClick={() => { onBack(); playChaosSound(); }} className="bg-[#ff0099] text-white px-10 py-5 text-2xl border-4 border-black hover:bg-black active:translate-y-2 active:shadow-none">EXIT</button></div>
       </div>
     );
 };
@@ -512,8 +547,8 @@ const RetroMode = ({ onBack }: { onBack: () => void }) => (
   <div className="w-full h-screen bg-[#2d2d2d] font-mono text-[#76c7c0] flex flex-col items-center justify-center p-8 border-[20px] border-[#4a4a4a] relative">
       <div className="max-w-3xl w-full space-y-8 text-center z-20">
           <Gamepad2 size={64} className="mx-auto mb-4 text-[#e06c75] animate-bounce" />
-          <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-widest text-[#e06c75] drop-shadow-[4px_4px_0_#fff]">Adhwika World</h1>
-          <button onClick={onBack} className="mt-8 px-8 py-4 bg-[#e06c75] text-black font-black border-4 border-black shadow-[5px_5px_0_#fff] hover:translate-y-1 hover:shadow-none uppercase">EXIT TO DESKTOP</button>
+          <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-widest text-[#e06c75] drop-shadow-[4px_4px_0_#fff]">Pixel Playground World</h1>
+          <button onClick={() => { onBack(); playRetroExplosion(); }} className="mt-8 px-8 py-4 bg-[#e06c75] text-black font-black border-4 border-black shadow-[5px_5px_0_#fff] hover:translate-y-1 hover:shadow-none uppercase">EXIT TO DESKTOP</button>
       </div>
   </div>
 );
