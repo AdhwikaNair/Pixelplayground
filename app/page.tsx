@@ -526,39 +526,26 @@ const ToolBtn_Wiggly = ({ icon, active, onClick }: { icon: React.ReactNode, acti
 const ChaosMode = ({ onBack }: { onBack: () => void }) => {
     const sceneRef = useRef<HTMLDivElement>(null);
     const engineRef = useRef<Matter.Engine | null>(null);
-    const [ballColor, setBallColor] = useState('#ff0099');
-    useEffect(() => {
-      const colorInterval = setInterval(() => {
-        const colors = ['#ff0099', '#00ffff', '#ccff00', '#ff6600', '#00ff88', '#ff00ff'];
-        setBallColor(colors[Math.floor(Math.random() * colors.length)]);
-      }, 300);
-      return () => clearInterval(colorInterval);
-    }, []);
     useEffect(() => {
       if (!sceneRef.current) return;
       const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint, Constraint } = Matter;
       const engine = Engine.create();
       const render = Render.create({ element: sceneRef.current, engine: engine, options: { width: window.innerWidth, height: window.innerHeight, pixelRatio: window.devicePixelRatio, wireframes: false, background: 'transparent' } });
       const ground = Bodies.rectangle(window.innerWidth / 2, window.innerHeight + 60, window.innerWidth * 2, 120, { isStatic: true, render: { fillStyle: 'white' } });
-      const ball = Bodies.polygon(5, 200, 300, 75, { density: 0.12, frictionAir: 0.002, render: { fillStyle: ballColor, strokeStyle: '#00ffff', lineWidth: 8 } });
-      const chain = Constraint.create({ pointA: { x: 200, y: 50 }, bodyB: ball, stiffness: 0.9, length: 280, render: { visible: true, lineWidth: 6, strokeStyle: '#ccff00' } });
+      const ball = Bodies.circle(200, 300, 75, { density: 0.12, frictionAir: 0.002, render: { fillStyle: '#000', strokeStyle: '#fff', lineWidth: 10 } });
+      const chain = Constraint.create({ pointA: { x: 200, y: 50 }, bodyB: ball, stiffness: 0.9, length: 280, render: { visible: true, lineWidth: 8, strokeStyle: '#000' } });
       const colors = ['#ff0099', '#00ffff', '#ccff00', '#ff6600'];
       const boxes = Array.from({length: 15}).map(() => Bodies.rectangle(Math.random()*window.innerWidth, 100, 80, 80, { render: { fillStyle: colors[Math.floor(Math.random()*4)], strokeStyle: 'black', lineWidth: 5 } }));
       Composite.add(engine.world, [ground, ball, chain, ...boxes]);
       const mouse = Mouse.create(render.canvas); Composite.add(engine.world, MouseConstraint.create(engine, { mouse: mouse, constraint: { stiffness: 0.2, render: { visible: false } } }));
       Render.run(render); Runner.run(Runner.create(), engine); engineRef.current = engine;
       return () => { Render.stop(render); if (render.canvas) render.canvas.remove(); Composite.clear(engine.world, false); Engine.clear(engine); };
-    }, [ballColor]);
+    }, []);
     return (
       <div className="relative w-full h-screen overflow-hidden cursor-crosshair font-black" style={{ backgroundColor: '#8b5cf6', backgroundImage: 'radial-gradient(#c4b5fd 20%, transparent 20%), radial-gradient(#c4b5fd 20%, transparent 20%)', backgroundPosition: '0 0, 25px 25px', backgroundSize: '50px 50px' }}>
         <div ref={sceneRef} className="absolute inset-0" />
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-5">
-          <div className="text-center animate-pulse" style={{ animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
-            <p className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 drop-shadow-[0_0_20px_#ff0099] opacity-50 uppercase tracking-widest">YOU ARE UNDER MY CONTROL</p>
-          </div>
-        </div>
         <div className="absolute top-12 left-12 z-10 pointer-events-none select-none text-white drop-shadow-[8px_8px_0_#000]"><h1 className="text-7xl md:text-9xl uppercase tracking-tighter leading-[0.75] stroke-black" style={{ WebkitTextStroke: "3px black" }}>CHAOS<br/>MODE</h1></div>
-        <div className="absolute bottom-12 right-12 z-10 flex gap-6"><button onClick={() => { engineRef.current && (engineRef.current.world.gravity.y *= -1); playChaosSound(); }} className="bg-black text-white px-10 py-5 text-2xl border-4 border-white shadow-[10px_10px_0px_#ccff00] active:translate-y-2 active:shadow-none">FLIP GRAVITY</button><button onClick={() => { onBack(); playChaosSound(); }} className="bg-[#ff0099] text-white px-10 py-5 text-2xl border-4 border-black hover:bg-black active:translate-y-2 active:shadow-none">EXIT</button></div>
+        <div className="absolute bottom-12 right-12 z-10 flex gap-6"><button onClick={() => engineRef.current && (engineRef.current.world.gravity.y *= -1)} className="bg-black text-white px-10 py-5 text-2xl border-4 border-white shadow-[10px_10px_0px_#ccff00] active:translate-y-2 active:shadow-none">FLIP GRAVITY</button><button onClick={onBack} className="bg-[#ff0099] text-white px-10 py-5 text-2xl border-4 border-black hover:bg-black active:translate-y-2 active:shadow-none">EXIT</button></div>
       </div>
     );
 };
