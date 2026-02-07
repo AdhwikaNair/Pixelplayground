@@ -480,7 +480,10 @@ const WigglyMode = ({ onBack, markerSize, setMarkerSize }: { onBack: () => void,
             <input type="range" min="5" max="50" value={markerSize} onChange={(e) => setMarkerSize(Number(e.target.value))} className="w-full" />
             <div className="text-xs text-black mt-2 font-mono text-center">{markerSize}px</div>
           </div>
-          <button onClick={() => { playRetroExplosion(); }} className="mt-auto bg-[#ff0055] text-white border-4 border-black p-4 font-black text-xl uppercase tracking-tighter shadow-[8px_8px_0_#000] active:translate-x-1 active:translate-y-1 transition-all flex flex-col items-center gap-1 group"><Bomb size={32} />DOOMSDAY</button>
+          <div className="bg-white border-4 border-black shadow-[6px_6px_0_#1a2b3c] overflow-hidden">
+            <img src="/pixel-art-illustration.jpg" alt="Creative Artist Illustration" className="w-full aspect-square object-cover" />
+          </div>
+          <button onClick={() => { playRetroExplosion(); }} className="bg-[#ff0055] text-white border-4 border-black p-4 font-black text-xl uppercase tracking-tighter shadow-[8px_8px_0_#000] active:translate-x-1 active:translate-y-1 transition-all flex flex-col items-center gap-1 group"><Bomb size={32} />DOOMSDAY</button>
         </div>
       </div>
     </div>
