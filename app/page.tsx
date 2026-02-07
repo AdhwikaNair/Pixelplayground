@@ -69,20 +69,41 @@ export default function App() {
         {vibe === "neutral" && (
           <motion.div key="neutral" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full h-full flex items-center justify-center relative">
             <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
-            <div className="text-center space-y-8 z-10 max-w-md w-full px-6">
+            <div className="text-center space-y-8 z-10 max-w-4xl w-full px-6">
               <motion.h1 initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="text-7xl font-black tracking-tighter drop-shadow-sm">Pixel Playground.</motion.h1>
               <p className="text-slate-600 font-mono text-sm tracking-wider">Where imagination meets interaction. Create, explore, and play.</p>
-              <form onSubmit={handleInput} className="relative group">
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onClick={() => setVibe("coffee_mode")} className="group relative overflow-hidden rounded-xl border-4 border-slate-900 bg-amber-100 p-4 font-black uppercase tracking-widest shadow-[6px_6px_0_rgba(0,0,0,1)] hover:shadow-[2px_2px_0_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all">
+                  <div className="text-2xl mb-2">☕</div>
+                  <span className="text-sm">Coffee Mode</span>
+                </button>
+                <button onClick={() => setVibe("wiggly")} className="group relative overflow-hidden rounded-xl border-4 border-slate-900 bg-blue-100 p-4 font-black uppercase tracking-widest shadow-[6px_6px_0_rgba(0,0,0,1)] hover:shadow-[2px_2px_0_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all">
+                  <div className="text-2xl mb-2">🎨</div>
+                  <span className="text-sm">Canvas Studio</span>
+                </button>
+                <button onClick={() => setVibe("chaos")} className="group relative overflow-hidden rounded-xl border-4 border-slate-900 bg-yellow-200 p-4 font-black uppercase tracking-widest shadow-[6px_6px_0_rgba(0,0,0,1)] hover:shadow-[2px_2px_0_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all">
+                  <div className="text-2xl mb-2">💥</div>
+                  <span className="text-sm">Chaos Mode</span>
+                </button>
+                <button onClick={() => setVibe("retro")} className="group relative overflow-hidden rounded-xl border-4 border-slate-900 bg-pink-100 p-4 font-black uppercase tracking-widest shadow-[6px_6px_0_rgba(0,0,0,1)] hover:shadow-[2px_2px_0_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all">
+                  <div className="text-2xl mb-2">🕹️</div>
+                  <span className="text-sm">Retro World</span>
+                </button>
+              </div>
+
+              <div className="relative group">
                 <input 
                   autoFocus 
                   type="text" 
                   value={inputValue} 
                   onChange={(e) => setInputValue(e.target.value)} 
-                  placeholder="Coffee / Wiggly / Chaos" 
+                  placeholder="Or type a command..." 
                   className="w-full px-6 py-5 border-4 border-slate-900 rounded-[2.5rem] focus:ring-8 focus:ring-slate-100 outline-none bg-white text-center text-2xl transition-all shadow-[10px_10px_0px_rgba(0,0,0,1)] placeholder:text-slate-300 uppercase tracking-widest font-black" 
                 />
-                <button type="submit" className="absolute right-6 top-1/2 -translate-y-1/2 p-2 bg-slate-900 text-white rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity"><Send size={20} /></button>
-              </form>
+                <button type="submit" onClick={handleInput} className="absolute right-6 top-1/2 -translate-y-1/2 p-2 bg-slate-900 text-white rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity"><Send size={20} /></button>
+              </div>
+              
               <div className="flex justify-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
                 <span className="border-2 border-slate-200 px-3 py-1 rounded-full bg-white">Interaction Designer</span>
                 <span className="border-2 border-slate-200 px-3 py-1 rounded-full bg-white">Creative Developer</span>
