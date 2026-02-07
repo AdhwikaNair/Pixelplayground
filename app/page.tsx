@@ -482,7 +482,7 @@ const WigglyMode = ({ onBack, markerSize, setMarkerSize }: { onBack: () => void,
           <canvas ref={canvasRef} width={1400} height={1000} className={`w-full h-full mt-4 bg-white ${tool === 'eraser' ? 'cursor-cell' : 'cursor-crosshair'}`} onMouseDown={startDrawing} onMouseMove={draw} onMouseUp={stopDrawing} onMouseLeave={stopDrawing} />
         </div>
         <div className="w-56 flex flex-col gap-4">
-          <div className="bg-white border-4 border-black p-3 shadow-[6px_6px_0_#1a2b3c]"><h2 className="text-xl font-black uppercase tracking-tighter">ADHWIKA</h2><p className="text-[10px] mt-2 italic text-pink-600 font-bold uppercase">"Drawing is life."</p></div>
+          <div className="bg-white border-4 border-black p-3 shadow-[6px_6px_0_#1a2b3c]"><h2 className="text-xl font-black uppercase tracking-tighter">PIXEL PLAYGROUND</h2><p className="text-[10px] mt-2 italic text-pink-600 font-bold uppercase">"Create & Explore."</p></div>
           <div className="bg-white border-4 border-black p-3 shadow-[6px_6px_0_#1a2b3c]">
             <label className="block text-xs font-bold uppercase mb-2 text-black">Marker Size</label>
             <input type="range" min="5" max="50" value={markerSize} onChange={(e) => setMarkerSize(Number(e.target.value))} className="w-full" />
