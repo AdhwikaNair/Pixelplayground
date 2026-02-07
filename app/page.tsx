@@ -535,9 +535,11 @@ const ChaosMode = ({ onBack }: { onBack: () => void }) => {
       const ground = Bodies.rectangle(window.innerWidth / 2, window.innerHeight + 60, window.innerWidth * 2, 120, { isStatic: true, render: { fillStyle: 'white' } });
       const ball = Bodies.polygon(5, 200, 300, 75, { density: 0.12, frictionAir: 0.002, render: { fillStyle: '#ff0099', strokeStyle: '#00ffff', lineWidth: 12 } });
       const chain = Constraint.create({ pointA: { x: 200, y: 50 }, bodyB: ball, stiffness: 0.85, length: 280, render: { visible: true, lineWidth: 12, strokeStyle: '#ffff00' } });
-      const colors = ['#ff0099', '#00ffff', '#ccff00', '#ff6600'];
-      const boxes = Array.from({length: 15}).map(() => Bodies.rectangle(Math.random()*window.innerWidth, 100, 80, 80, { render: { fillStyle: colors[Math.floor(Math.random()*4)], strokeStyle: 'black', lineWidth: 5 } }));
-      Composite.add(engine.world, [ground, ball, chain, ...boxes]);
+      const colors = ['#ff0099', '#00ffff', '#ccff00', '#ff6600', '#00ff88', '#ff00ff'];
+      const boxes = Array.from({length: 20}).map(() => Bodies.rectangle(Math.random()*window.innerWidth, Math.random()*400, 70, 70, { render: { fillStyle: colors[Math.floor(Math.random()*colors.length)], strokeStyle: 'black', lineWidth: 5 } }));
+      const circles = Array.from({length: 15}).map(() => Bodies.circle(Math.random()*window.innerWidth, Math.random()*300, 35, { render: { fillStyle: colors[Math.floor(Math.random()*colors.length)], strokeStyle: 'black', lineWidth: 4 } }));
+      const triangles = Array.from({length: 10}).map(() => Bodies.polygon(3, Math.random()*window.innerWidth, Math.random()*350, 50, { render: { fillStyle: colors[Math.floor(Math.random()*colors.length)], strokeStyle: 'black', lineWidth: 5 } }));
+      Composite.add(engine.world, [ground, ball, chain, ...boxes, ...circles, ...triangles]);
       const mouse = Mouse.create(render.canvas); Composite.add(engine.world, MouseConstraint.create(engine, { mouse: mouse, constraint: { stiffness: 0.2, render: { visible: false } } }));
       Render.run(render); Runner.run(Runner.create(), engine); engineRef.current = engine;
       return () => { Render.stop(render); if (render.canvas) render.canvas.remove(); Composite.clear(engine.world, false); Engine.clear(engine); };
