@@ -526,6 +526,7 @@ const ToolBtn_Wiggly = ({ icon, active, onClick }: { icon: React.ReactNode, acti
 const ChaosMode = ({ onBack }: { onBack: () => void }) => {
     const sceneRef = useRef<HTMLDivElement>(null);
     const engineRef = useRef<Matter.Engine | null>(null);
+    const [showNote, setShowNote] = useState(false);
     useEffect(() => {
       if (!sceneRef.current) return;
       const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint, Constraint } = Matter;
@@ -545,6 +546,31 @@ const ChaosMode = ({ onBack }: { onBack: () => void }) => {
       <div className="relative w-full h-screen overflow-hidden cursor-crosshair font-black" style={{ backgroundColor: '#8b5cf6', backgroundImage: 'radial-gradient(#c4b5fd 20%, transparent 20%), radial-gradient(#c4b5fd 20%, transparent 20%)', backgroundPosition: '0 0, 25px 25px', backgroundSize: '50px 50px' }}>
         <div ref={sceneRef} className="absolute inset-0" />
         <div className="absolute top-12 left-12 z-10 pointer-events-none select-none text-white drop-shadow-[8px_8px_0_#000]"><h1 className="text-7xl md:text-9xl uppercase tracking-tighter leading-[0.75] stroke-black" style={{ WebkitTextStroke: "3px black" }}>CHAOS<br/>MODE</h1></div>
+        <button onClick={() => setShowNote(!showNote)} className="absolute top-12 right-12 z-10 bg-amber-100 border-4 border-black p-4 shadow-[6px_6px_0_#000] hover:scale-110 transition-transform cursor-pointer" title="View Note">
+          <div className="w-12 h-16 relative">
+            <div className="absolute inset-0 bg-amber-50 border-2 border-amber-900" style={{ transform: 'perspective(600px) rotateX(15deg)', clipPath: 'polygon(0 0, 100% 2%, 100% 100%, 0 98%)' }} />
+            <div className="absolute inset-1 flex items-center justify-center text-amber-900 font-bold text-lg">📜</div>
+          </div>
+        </button>
+        {showNote && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-[200] flex items-center justify-center p-4" onClick={() => setShowNote(false)}>
+            <div className="bg-amber-50 border-4 border-amber-900 p-8 shadow-[12px_12px_0_#000] max-w-2xl w-full max-h-96 overflow-y-auto" onClick={(e) => e.stopPropagation()} style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(180, 140, 60, 0.1) 24px, rgba(180, 140, 60, 0.1) 26px)' }}>
+              <h2 className="text-3xl font-black text-amber-900 mb-4 uppercase">Secret Note</h2>
+              <p className="text-amber-900 font-mono text-sm leading-relaxed whitespace-pre-wrap">
+Welcome to the Chaos Realm!
+
+This is where physics breaks free and gravity bends to your will. The pendulum swings, the boxes bounce, and everything moves in glorious chaos.
+
+Use your mouse to interact with the objects. Click the gravity button to flip the world upside down. Watch as colored boxes collide and dance across the screen.
+
+There is no order here, only beautiful chaos. Enjoy the madness.
+
+- The Chaos Keeper
+              </p>
+              <button onClick={() => setShowNote(false)} className="mt-6 bg-amber-900 text-amber-50 px-6 py-2 font-bold border-2 border-amber-900 hover:bg-amber-800 uppercase">Close</button>
+            </div>
+          </div>
+        )}
         <div className="absolute bottom-12 right-12 z-10 flex gap-6"><button onClick={() => engineRef.current && (engineRef.current.world.gravity.y *= -1)} className="bg-black text-white px-10 py-5 text-2xl border-4 border-white shadow-[10px_10px_0px_#ccff00] active:translate-y-2 active:shadow-none">FLIP GRAVITY</button><button onClick={onBack} className="bg-[#ff0099] text-white px-10 py-5 text-2xl border-4 border-black hover:bg-black active:translate-y-2 active:shadow-none">EXIT</button></div>
       </div>
     );
