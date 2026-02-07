@@ -422,8 +422,11 @@ const WigglyMode = ({ onBack, markerSize, setMarkerSize }: { onBack: () => void,
     const canvas = canvasRef.current;
     if (canvas) {
       const imageData = canvas.toDataURL();
-      setPastCreations(prev => [...prev, imageData]);
-      setCurrentGalleryIndex(prev => prev + 1);
+      setPastCreations(prev => {
+        const updated = [...prev, imageData];
+        setCurrentGalleryIndex(updated.length - 1);
+        return updated;
+      });
     }
     playRetroExplosion();
     setShake(true);
@@ -491,10 +494,10 @@ const WigglyMode = ({ onBack, markerSize, setMarkerSize }: { onBack: () => void,
           <div className="bg-white border-4 border-black shadow-[6px_6px_0_#1a2b3c] overflow-hidden flex flex-col">
             {pastCreations.length > 0 ? (
               <>
-                <img src={pastCreations[currentGalleryIndex % pastCreations.length] || "/placeholder.svg"} alt="Past Creation" className="w-32 h-32 object-cover" />
+                <img src={pastCreations[currentGalleryIndex] || "/placeholder.svg"} alt="Past Creation" className="w-32 h-32 object-cover" />
                 <div className="flex gap-2 p-2 bg-slate-100 text-xs font-bold uppercase justify-center">
                   <button onClick={() => setCurrentGalleryIndex(prev => prev === 0 ? pastCreations.length - 1 : prev - 1)} className="px-2 py-1 bg-black text-white border border-black hover:bg-slate-700">←</button>
-                  <span className="flex-1 text-center">{currentGalleryIndex % pastCreations.length + 1}/{pastCreations.length}</span>
+                  <span className="flex-1 text-center">{currentGalleryIndex + 1}/{pastCreations.length}</span>
                   <button onClick={() => setCurrentGalleryIndex(prev => (prev + 1) % pastCreations.length)} className="px-2 py-1 bg-black text-white border border-black hover:bg-slate-700">→</button>
                 </div>
               </>
