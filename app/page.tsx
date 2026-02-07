@@ -468,11 +468,6 @@ const WigglyMode = ({ onBack, markerSize, setMarkerSize }: { onBack: () => void,
                 <button key={c} onClick={() => setColor(c)} className={`w-full aspect-square border-2 border-black ${color===c?'ring-2 ring-black':''}`} style={{backgroundColor: c}} />
               ))}
             </div>
-            <div className="border-t-2 border-black mt-3 pt-3">
-              <label className="block text-xs font-bold uppercase mb-2 text-black">Marker Size</label>
-              <input type="range" min="5" max="50" value={markerSize} onChange={(e) => setMarkerSize(Number(e.target.value))} className="w-full" />
-              <div className="text-xs text-black mt-1 font-mono text-center">{markerSize}px</div>
-            </div>
           </div>
         </div>
         <div className="flex-1 bg-white border-4 border-black shadow-[10px_10px_0_rgba(0,0,0,0.1)] relative overflow-hidden">
@@ -480,7 +475,12 @@ const WigglyMode = ({ onBack, markerSize, setMarkerSize }: { onBack: () => void,
         </div>
         <div className="w-56 flex flex-col gap-4">
           <div className="bg-white border-4 border-black p-3 shadow-[6px_6px_0_#1a2b3c]"><h2 className="text-xl font-black uppercase tracking-tighter">ADHWIKA</h2><p className="text-[10px] mt-2 italic text-pink-600 font-bold uppercase">"Drawing is life."</p></div>
-          <button onClick={() => {}} className="mt-auto bg-[#ff0055] text-white border-4 border-black p-4 font-black text-xl uppercase tracking-tighter shadow-[8px_8px_0_#000] active:translate-x-1 active:translate-y-1 transition-all flex flex-col items-center gap-1 group"><Bomb size={32} />DOOMSDAY</button>
+          <div className="bg-white border-4 border-black p-3 shadow-[6px_6px_0_#1a2b3c]">
+            <label className="block text-xs font-bold uppercase mb-2 text-black">Marker Size</label>
+            <input type="range" min="5" max="50" value={markerSize} onChange={(e) => setMarkerSize(Number(e.target.value))} className="w-full" />
+            <div className="text-xs text-black mt-2 font-mono text-center">{markerSize}px</div>
+          </div>
+          <button onClick={() => { playRetroExplosion(); }} className="mt-auto bg-[#ff0055] text-white border-4 border-black p-4 font-black text-xl uppercase tracking-tighter shadow-[8px_8px_0_#000] active:translate-x-1 active:translate-y-1 transition-all flex flex-col items-center gap-1 group"><Bomb size={32} />DOOMSDAY</button>
         </div>
       </div>
     </div>
