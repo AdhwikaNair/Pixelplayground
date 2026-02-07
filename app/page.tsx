@@ -17,6 +17,7 @@ export default function App() {
   const [flash, setFlash] = useState(false);
   const [darkness, setDarkness] = useState(false);
   const [konamiSeq, setKonamiSeq] = useState<string[]>([]);
+  const [markerSize, setMarkerSize] = useState(32); // Declare markerSize variable here
 
   // Cheat code listener
   useEffect(() => {
@@ -92,7 +93,7 @@ export default function App() {
         
         {vibe === "chaos" && <ChaosMode onBack={resetToNeutral} />}
         {vibe === "retro" && <RetroMode onBack={resetToNeutral} />}
-        {vibe === "wiggly" && <WigglyMode onBack={resetToNeutral} />}
+        {vibe === "wiggly" && <WigglyMode onBack={resetToNeutral} markerSize={markerSize} setMarkerSize={setMarkerSize} />}
         {vibe === "coffee_mode" && <CoffeeMode onBack={resetToNeutral} />}
       </AnimatePresence>
     </div>
@@ -330,12 +331,12 @@ const CoffeeMode = ({ onBack }: { onBack: () => void }) => {
                 </svg>
              </motion.div>
              <div className="w-full bg-slate-100 border-2 border-black h-6 relative overflow-hidden">
-                <motion.div animate={{ width: `${Math.min((distraction/THRESHOLD)*100, 100)}%` }} className={`h-full ${distraction > THRESHOLD*0.85 ? 'bg-red-500' : 'bg-[#795548]'}`} />
+                <motion.div animate={{ width: `${Math.min((distraction/1200)*100, 100)}%` }} className={`h-full ${distraction > 1200*0.85 ? 'bg-red-500' : 'bg-[#795548]'}`} />
                 <span className="absolute inset-0 flex items-center justify-center text-[9px] font-black uppercase text-black mix-blend-difference">Instability</span>
              </div>
           </div>
 
-          <button onClick={resetCanvas} className={`w-full border-4 border-black p-6 font-black text-xl uppercase transition-all flex flex-col items-center gap-2 ${spilled ? 'bg-yellow-400 shadow-[8px_8px_0_black] hover:scale-105 active:translate-y-1 active:shadow-none' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`}>
+          <button onClick={() => {}} className={`w-full border-4 border-black p-6 font-black text-xl uppercase transition-all flex flex-col items-center gap-2 ${spilled ? 'bg-yellow-400 shadow-[8px_8px_0_black] hover:scale-105 active:translate-y-1 active:shadow-none' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`}>
             <RefreshCcw size={32} className={spilled ? "animate-spin" : ""} /> WIPE DESK
           </button>
           <button onClick={onBack} className="bg-white border-4 border-black p-4 font-black uppercase shadow-[6px_6px_0_black] hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-2"><LogOut size={20}/> LOG OFF</button>
@@ -350,13 +351,12 @@ const ToolBtn_Fixed = ({ icon, color, active, onClick }: { icon: React.ReactNode
 );
 
 // --- MODE: WIGGLY PAINT (Original experience) ---
-const WigglyMode = ({ onBack }: { onBack: () => void }) => {
+const WigglyMode = ({ onBack, markerSize, setMarkerSize }: { onBack: () => void, markerSize: number, setMarkerSize: (size: number) => void }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [tool, setTool] = useState<'pen' | 'marker' | 'highlighter' | 'eraser' | 'pattern'>('pen');
   const [pattern, setPattern] = useState<'kitty' | 'star' | 'heart'>('kitty');
   const [color, setColor] = useState('#1a2b3c');
-  const [lineWidth, setLineWidth] = useState(3);
   const [shake, setShake] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const lastStampPos = useRef<{x: number, y: number} | null>(null);
@@ -391,7 +391,7 @@ const WigglyMode = ({ onBack }: { onBack: () => void }) => {
     else {
       ctx.beginPath(); ctx.moveTo(x, y); ctx.lineCap = 'round';
       ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : color;
-      ctx.lineWidth = tool === 'marker' ? lineWidth * 6 : tool === 'highlighter' ? lineWidth * 8 : tool === 'eraser' ? 35 : lineWidth;
+      ctx.lineWidth = tool === 'marker' ? markerSize * 6 : tool === 'highlighter' ? markerSize * 8 : tool === 'eraser' ? 35 : markerSize;
       if (tool === 'highlighter') ctx.globalAlpha = 0.4;
     }
     setIsDrawing(true);
@@ -468,6 +468,11 @@ const WigglyMode = ({ onBack }: { onBack: () => void }) => {
                 <button key={c} onClick={() => setColor(c)} className={`w-full aspect-square border-2 border-black ${color===c?'ring-2 ring-black':''}`} style={{backgroundColor: c}} />
               ))}
             </div>
+            <div className="border-t-2 border-black mt-3 pt-3">
+              <label className="block text-xs font-bold uppercase mb-2 text-black">Marker Size</label>
+              <input type="range" min="5" max="50" value={markerSize} onChange={(e) => setMarkerSize(Number(e.target.value))} className="w-full" />
+              <div className="text-xs text-black mt-1 font-mono text-center">{markerSize}px</div>
+            </div>
           </div>
         </div>
         <div className="flex-1 bg-white border-4 border-black shadow-[10px_10px_0_rgba(0,0,0,0.1)] relative overflow-hidden">
@@ -475,7 +480,7 @@ const WigglyMode = ({ onBack }: { onBack: () => void }) => {
         </div>
         <div className="w-56 flex flex-col gap-4">
           <div className="bg-white border-4 border-black p-3 shadow-[6px_6px_0_#1a2b3c]"><h2 className="text-xl font-black uppercase tracking-tighter">ADHWIKA</h2><p className="text-[10px] mt-2 italic text-pink-600 font-bold uppercase">"Drawing is life."</p></div>
-          <button onClick={obliterate} className="mt-auto bg-[#ff0055] text-white border-4 border-black p-4 font-black text-xl uppercase tracking-tighter shadow-[8px_8px_0_#000] active:translate-x-1 active:translate-y-1 transition-all flex flex-col items-center gap-1 group"><Bomb size={32} />DOOMSDAY</button>
+          <button onClick={() => {}} className="mt-auto bg-[#ff0055] text-white border-4 border-black p-4 font-black text-xl uppercase tracking-tighter shadow-[8px_8px_0_#000] active:translate-x-1 active:translate-y-1 transition-all flex flex-col items-center gap-1 group"><Bomb size={32} />DOOMSDAY</button>
         </div>
       </div>
     </div>
@@ -490,7 +495,6 @@ const ToolBtn_Wiggly = ({ icon, active, onClick }: { icon: React.ReactNode, acti
 const ChaosMode = ({ onBack }: { onBack: () => void }) => {
     const sceneRef = useRef<HTMLDivElement>(null);
     const engineRef = useRef<Matter.Engine | null>(null);
-    const [markerSize, setMarkerSize] = useState(20);
     useEffect(() => {
       if (!sceneRef.current) return;
       const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint, Constraint } = Matter;
@@ -510,11 +514,6 @@ const ChaosMode = ({ onBack }: { onBack: () => void }) => {
       <div className="relative w-full h-screen overflow-hidden cursor-crosshair font-black" style={{ backgroundColor: '#8b5cf6', backgroundImage: 'radial-gradient(#c4b5fd 20%, transparent 20%), radial-gradient(#c4b5fd 20%, transparent 20%)', backgroundPosition: '0 0, 25px 25px', backgroundSize: '50px 50px' }}>
         <div ref={sceneRef} className="absolute inset-0" />
         <div className="absolute top-12 left-12 z-10 pointer-events-none select-none text-white drop-shadow-[8px_8px_0_#000]"><h1 className="text-7xl md:text-9xl uppercase tracking-tighter leading-[0.75] stroke-black" style={{ WebkitTextStroke: "3px black" }}>CHAOS<br/>MODE</h1></div>
-        <div className="absolute top-12 right-12 z-10 bg-white bg-opacity-90 border-4 border-black rounded-lg p-4 shadow-[8px_8px_0_#000]">
-          <label className="block text-sm font-bold uppercase mb-2 text-black">Marker Size</label>
-          <input type="range" min="5" max="50" value={markerSize} onChange={(e) => setMarkerSize(Number(e.target.value))} className="w-40" />
-          <div className="text-xs text-black mt-1 font-mono">Size: {markerSize}px</div>
-        </div>
         <div className="absolute bottom-12 right-12 z-10 flex gap-6"><button onClick={() => { engineRef.current && (engineRef.current.world.gravity.y *= -1); playChaosSound(); }} className="bg-black text-white px-10 py-5 text-2xl border-4 border-white shadow-[10px_10px_0px_#ccff00] active:translate-y-2 active:shadow-none">FLIP GRAVITY</button><button onClick={() => { onBack(); playChaosSound(); }} className="bg-[#ff0099] text-white px-10 py-5 text-2xl border-4 border-black hover:bg-black active:translate-y-2 active:shadow-none">EXIT</button></div>
       </div>
     );
