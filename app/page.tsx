@@ -563,9 +563,16 @@ This is where physics breaks free and gravity bends to your will. The pendulum s
 
 Use your mouse to interact with the objects. Click the gravity button to flip the world upside down. Watch as colored boxes collide and dance across the screen.
 
-There is no order here, only beautiful chaos. Enjoy the madness.
+WARNING: If you see the boxes floating upside down, don't panic. Gravity is fine. You're the one who's upside down now.
+
+Pro tip: The pendulum is not a hypnotic device. You are not under its control. Blink normally.
+
+There is no order here, only beautiful chaos. Also, if a box hits you through the screen, that's not a bug—that's a feature.
+
+Enjoy the madness.
 
 - The Chaos Keeper
+(P.S. - Why did the gravity button go to therapy? It had too much baggage pulling it down.)
               </p>
               <button onClick={() => setShowNote(false)} className="mt-6 bg-amber-900 text-amber-50 px-6 py-2 font-bold border-2 border-amber-900 hover:bg-amber-800 uppercase">Close</button>
             </div>
