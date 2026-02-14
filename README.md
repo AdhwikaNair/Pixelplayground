@@ -1,4 +1,4 @@
-# 🎨 Pixel Playground
+#  Pixel Playground
 
 An interactive React-based UI experiment designed for creative exploration and playful frontend experiences.
 
