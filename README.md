@@ -126,19 +126,30 @@ Build something visually engaging and fun
 🤝 Contributing
 
 Contributions are welcome.
+
 Fork the repository
+
 Create your feature branch
+
 git checkout -b feature-name
+
 Commit your changes
+
 git commit -m "Add feature"
+
 Push to the branch
+
 git push origin feature-name
+
 Open a Pull Request
 
+
 📜 License
+
 This project is licensed under the MIT License.
 
 👩‍💻 Author
+
 Created by Adhwika Nair
 
 If you like this project, consider giving it a ⭐ on GitHub!
