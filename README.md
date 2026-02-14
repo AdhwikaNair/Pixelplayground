@@ -95,7 +95,8 @@ Or connect your GitHub repository directly to Vercel for automatic deployments.
 
 📸 Screenshots
 
-<img width="2880" height="1524" alt="image" src="https://github.com/user-attachments/assets/28fb5627-2c9a-4f34-b0e9-fd5fc2fafe28" />
+<img width="2880" height="1301" alt="image" src="https://github.com/user-attachments/assets/ca914624-7980-4c86-8bff-d12752dfe5d5" />
+
 
 
 <img width="2880" height="1297" alt="image" src="https://github.com/user-attachments/assets/d1e8becc-44b1-47ae-ad1d-cefa0816f50a" />
